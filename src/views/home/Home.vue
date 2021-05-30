@@ -5,20 +5,95 @@
     </nav-bar>
     <home-swiper :banners="banners"></home-swiper>
     <recommend-view :recommends="recommends" />
+    <feature-view />
+    <tab-control :titles="['流行','新款','精选']" class="tab-control" />
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+      <li>4</li>
+      <li>5</li>
+      <li>6</li>
+      <li>7</li>
+      <li>8</li>
+    </ul>
   </div>
 </template>
 
 <script>
-import NavBar from "@components/common/navbar/NavBar";
-import { getHomeMultidate } from "@network/home";
+import { getHomeMultidate, getHomeGoods } from "@network/home";
+
 import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
+import FeatureView from "./childComps/FeatureView.vue";
+
+import NavBar from "@components/common/navbar/NavBar";
+import TabControl from "@components/content/tabControl/TabControl";
+
 export default {
   name: "Home",
   components: {
-    NavBar,
     HomeSwiper,
     RecommendView,
+    FeatureView,
+    NavBar,
+    TabControl,
   },
   data() {
     return {
@@ -35,12 +110,30 @@ export default {
       this.banners = res.data.banner.list;
       this.recommends = res.data.recommend.list;
     });
+    getHomeGoods("pop", 1).then((res) => {
+      console.log(res);
+    });
   },
 };
 </script>
 <style>
+.home {
+  padding-top: 44px;
+}
 .home-nav {
   background-color: var(--color-tint);
   color: #fff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 9;
+}
+.tab-control {
+  position: sticky;
+  top: 44px;
+}
+.home ul li {
+  font-size: 20;
 }
 </style>
