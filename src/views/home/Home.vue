@@ -7,72 +7,8 @@
     <recommend-view :recommends="recommends" />
     <feature-view />
     <tab-control :titles="['流行','新款','精选']" class="tab-control" />
-    <ul>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-      <li>1</li>
-      <li>2</li>
-      <li>3</li>
-      <li>4</li>
-      <li>5</li>
-      <li>6</li>
-      <li>7</li>
-      <li>8</li>
-    </ul>
+    <!-- <span>{{this.goods.pop.list[0]}}</span> -->
+    <goods-list :goods="goods['pop'].list" />
   </div>
 </template>
 
@@ -81,10 +17,11 @@ import { getHomeMultidate, getHomeGoods } from "@network/home";
 
 import HomeSwiper from "./childComps/HomeSwiper";
 import RecommendView from "./childComps/RecommendView";
-import FeatureView from "./childComps/FeatureView.vue";
+import FeatureView from "./childComps/FeatureView";
 
 import NavBar from "@components/common/navbar/NavBar";
 import TabControl from "@components/content/tabControl/TabControl";
+import GoodsList from "@components/content/goods/GoodsList";
 
 export default {
   name: "Home",
@@ -94,25 +31,47 @@ export default {
     FeatureView,
     NavBar,
     TabControl,
+    GoodsList,
   },
   data() {
     return {
       //   result: null,
       banners: [],
       recommends: [],
+      goods: {
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] },
+      },
     };
   },
+  //created中一般只写代码的主要逻辑
   created() {
-    getHomeMultidate().then((res) => {
-      // res=>指向大的data对象 函数结束后 res会被回收
-      // 但是由于让result指向了data 则 res被回收后 data依然存在
-      //   this.result = res;
-      this.banners = res.data.banner.list;
-      this.recommends = res.data.recommend.list;
-    });
-    getHomeGoods("pop", 1).then((res) => {
-      console.log(res);
-    });
+    this.getHomeMultidate1();
+    //页面一生成，只请求各个页面的第一页数据
+    this.getHomeGoods1("pop");
+    this.getHomeGoods1("new");
+    this.getHomeGoods1("sell");
+  },
+  methods: {
+    getHomeMultidate1() {
+      getHomeMultidate().then((res) => {
+        // res=>指向大的data对象 函数结束后 res会被回收
+        // 但是由于让result指向了data 则 res被回收后 data依然存在
+        //   this.result = res;
+        this.banners = res.data.banner.list;
+        this.recommends = res.data.recommend.list;
+      });
+    },
+    getHomeGoods1(type) {
+      // 获取当前的page 然后＋1即下一次要获取的page
+      const page = this.goods[type].page + 1;
+      //请求商品数据
+      getHomeGoods(type, page).then((res) => {
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page += 1;
+      });
+    },
   },
 };
 </script>

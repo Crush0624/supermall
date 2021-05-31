@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO swipe -->
   <div id="hy-swiper">
     <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
       <slot></slot>
@@ -25,20 +26,22 @@ export default {
       type: Number,
       default: 3000,
     },
+    //设置每张图片的移动速度
     animDuration: {
       type: Number,
       default: 300,
     },
     moveRatio: {
       type: Number,
-      default: 0.25, //滚动比例
+      default: 0.25,
     },
+    //是否显示下面的圆点
     showIndicator: {
       type: Boolean,
       default: true,
     },
   },
-  data: function () {
+  data() {
     return {
       slideCount: 0, // 元素个数
       totalWidth: 0, // swiper的宽度
@@ -47,7 +50,7 @@ export default {
       scrolling: false, // 是否正在滚动
     };
   },
-  mounted: function () {
+  mounted() {
     // 1.操作DOM, 在前后添加Slide
     setTimeout(() => {
       this.handleDom();
@@ -60,20 +63,20 @@ export default {
     /**
      * 定时器操作
      */
-    startTimer: function () {
+    startTimer() {
       this.playTimer = window.setInterval(() => {
         this.currentIndex++;
         this.scrollContent(-this.currentIndex * this.totalWidth);
       }, this.interval);
     },
-    stopTimer: function () {
+    stopTimer() {
       window.clearInterval(this.playTimer);
     },
 
     /**
      * 滚动到正确的位置
      */
-    scrollContent: function (currentPosition) {
+    scrollContent(currentPosition) {
       // 0.设置正在滚动
       this.scrolling = true;
 
@@ -91,7 +94,7 @@ export default {
     /**
      * 校验正确的位置
      */
-    checkPosition: function () {
+    checkPosition() {
       window.setTimeout(() => {
         // 1.校验正确的位置
         this.swiperStyle.transition = "0ms";
@@ -111,7 +114,7 @@ export default {
     /**
      * 设置滚动的位置
      */
-    setTransform: function (position) {
+    setTransform(position) {
       this.swiperStyle.transform = `translate3d(${position}px, 0, 0)`;
       this.swiperStyle[
         "-webkit-transform"
@@ -122,7 +125,7 @@ export default {
     /**
      * 操作DOM, 在DOM前后添加Slide
      */
-    handleDom: function () {
+    handleDom() {
       // 1.获取要操作的元素
       let swiperEl = document.querySelector(".swiper");
       let slidesEls = swiperEl.getElementsByClassName("slide");
@@ -147,7 +150,7 @@ export default {
     /**
      * 拖动事件的处理
      */
-    touchStart: function (e) {
+    touchStart(e) {
       // 1.如果正在滚动, 不可以拖动
       if (this.scrolling) return;
 
@@ -158,7 +161,7 @@ export default {
       this.startX = e.touches[0].pageX;
     },
 
-    touchMove: function (e) {
+    touchMove(e) {
       // 1.计算出用户拖动的距离
       this.currentX = e.touches[0].pageX;
       this.distance = this.currentX - this.startX;
@@ -169,7 +172,7 @@ export default {
       this.setTransform(moveDistance);
     },
 
-    touchEnd: function (e) {
+    touchEnd(e) {
       // 1.获取移动的距离
       let currentMove = Math.abs(this.distance);
 
@@ -200,15 +203,15 @@ export default {
     /**
      * 控制上一个, 下一个
      */
-    previous: function () {
+    previous() {
       this.changeItem(-1);
     },
 
-    next: function () {
+    next() {
       this.changeItem(1);
     },
 
-    changeItem: function (num) {
+    changeItem(num) {
       // 1.移除定时器
       this.stopTimer();
 
