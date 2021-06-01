@@ -23,4 +23,13 @@ export default {
 </script>
 
 <style>
+.goods {
+  display: flex;
+  /* 规定灵活的项目在必要的时候拆行或拆列 */
+  flex-wrap: wrap;
+  /* 居中 */
+  justify-content: space-around;
+
+  padding: 2px;
+}
 </style>

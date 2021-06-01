@@ -1,14 +1,18 @@
 <template>
-  <div class="home">
+  <div id="home" class="wrapper">
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control :titles="['流行','新款','精选']" class="tab-control" />
-    <!-- <span>{{this.goods.pop.list[0]}}</span> -->
-    <goods-list :goods="goods['pop'].list" />
+    <scroll class="content" ref="scroll1">
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" />
+      <!-- <span>{{this.goods.pop.list[0]}}</span> -->
+      <goods-list :goods="goods['pop'].list" />
+    </scroll>
+    <!-- 直接监听组件点击,必须加上native-->
+    <back-top @click.native="backClick" />
   </div>
 </template>
 
@@ -22,6 +26,8 @@ import FeatureView from "./childComps/FeatureView";
 import NavBar from "@components/common/navbar/NavBar";
 import TabControl from "@components/content/tabControl/TabControl";
 import GoodsList from "@components/content/goods/GoodsList";
+import Scroll from "@components/common/scroll/Scroll";
+import BackTop from "@components/content/backTop/BackTop";
 
 export default {
   name: "Home",
@@ -32,6 +38,8 @@ export default {
     NavBar,
     TabControl,
     GoodsList,
+    Scroll,
+    BackTop,
   },
   data() {
     return {
@@ -54,6 +62,23 @@ export default {
     this.getHomeGoods1("sell");
   },
   methods: {
+    tabClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = "pop";
+          break;
+        case 1:
+          this.currentType = "new";
+          break;
+        case 2:
+          this.currentType = "sell";
+          break;
+      }
+    },
+    backClick() {
+      //面向组件的ScrollTo方法
+      this.$refs["scroll1"].scrollTo(0, 0);
+    },
     getHomeMultidate1() {
       getHomeMultidate().then((res) => {
         // res=>指向大的data对象 函数结束后 res会被回收
@@ -75,9 +100,12 @@ export default {
   },
 };
 </script>
-<style>
-.home {
-  padding-top: 44px;
+// scoped作用域
+<style scoped>
+#home {
+  /* padding-top: 44px; */
+  /* vh视口宽度 */
+  height: 100vh;
 }
 .home-nav {
   background-color: var(--color-tint);
@@ -91,8 +119,17 @@ export default {
 .tab-control {
   position: sticky;
   top: 44px;
+  z-index: 9;
 }
 .home ul li {
   font-size: 20;
+}
+.content {
+  /* 计算scroll的高度 */
+  height: calc(100vh - 93px);
+  /* 需要留一段margin-top给tabbar */
+  margin-top: 44px;
+  overflow: hidden;
+  z-index: 9;
 }
 </style>

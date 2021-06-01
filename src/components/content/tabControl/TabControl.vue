@@ -33,6 +33,7 @@ export default {
     itemClick(index) {
       //改变currentIndex
       this.currentIndex = index;
+      this.$emit("tabClick", index);
     },
   },
 };
