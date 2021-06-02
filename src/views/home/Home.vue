@@ -3,16 +3,25 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll1">
+    <scroll
+      class="content"
+      ref="scroll"
+      :probe-type="3"
+      :click="true"
+      @scroll="contentScroll"
+      :pull-up-load="true"
+      @pullingUp="loadMore"
+    >
+      <!-- 传值时不加冒号，直接当成字符串 -->
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" />
       <!-- <span>{{this.goods.pop.list[0]}}</span> -->
-      <goods-list :goods="goods['pop'].list" />
+      <goods-list :goods="showGoods" />
     </scroll>
     <!-- 直接监听组件点击,必须加上native-->
-    <back-top @click.native="backClick" />
+    <back-top @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
 
@@ -51,7 +60,15 @@ export default {
         new: { page: 0, list: [] },
         sell: { page: 0, list: [] },
       },
+      currentType: "pop",
+      isShowBackTop: false,
+      taboffsetTop: 0,
     };
+  },
+  computed: {
+    showGoods() {
+      return this.goods[this.currentType].list;
+    },
   },
   //created中一般只写代码的主要逻辑
   created() {
@@ -77,7 +94,15 @@ export default {
     },
     backClick() {
       //面向组件的ScrollTo方法
-      this.$refs["scroll1"].scrollTo(0, 0);
+      this.$refs["scroll"].scrollTo(0, 0);
+    },
+    contentScroll(position) {
+      this.isShowBackTop = -position.y > 1000;
+    },
+    loadMore() {
+      this.getHomeGoods1(this.currentType);
+      //进行实时刷新 避免出现content高度无法响应式计算的问题
+      this.$refs.scroll.scroll.refresh();
     },
     getHomeMultidate1() {
       getHomeMultidate().then((res) => {
@@ -95,6 +120,8 @@ export default {
       getHomeGoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+        this.$refs.scroll.finishPullUp();
       });
     },
   },
