@@ -3,6 +3,13 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <tab-control
+      :titles="['流行','新款','精选']"
+      class="tab-control"
+      @tabClick="tabClick"
+      ref="tabControl1"
+      v-show="isTabFixed"
+    />
     <scroll
       class="content"
       ref="scroll"
@@ -13,10 +20,16 @@
       @pullingUp="loadMore"
     >
       <!-- 传值时不加冒号，直接当成字符串 -->
-      <home-swiper :banners="banners"></home-swiper>
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <recommend-view :recommends="recommends" />
       <feature-view />
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick" />
+      <tab-control
+        :titles="['流行','新款','精选']"
+        class="tab-control"
+        @tabClick="tabClick"
+        ref="tabControl2"
+        :class="{fixed:isTabFixed}"
+      />
       <!-- <span>{{this.goods.pop.list[0]}}</span> -->
       <goods-list :goods="showGoods" />
     </scroll>
@@ -63,6 +76,7 @@ export default {
       currentType: "pop",
       isShowBackTop: false,
       taboffsetTop: 0,
+      isTabFixed: false,
     };
   },
   computed: {
@@ -78,6 +92,18 @@ export default {
     this.getHomeGoods1("new");
     this.getHomeGoods1("sell");
   },
+  //不能在mounted获取offsetTop 此时图片没有加载完全 获取的offsetTop值不一定是正确的
+  //监听轮播图的加载情况 一旦轮播图加载 offsetTop值基本正确 可以达到吸顶效果
+  mounted() {
+    // console.log(this.$refs.tabControl.$el.offsetTop);
+    // new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     resolve();
+    //   }, 20);
+    // }).then((res) => {
+    //   console.log(this.$refs.tabControl.$el.offsetTop);
+    // });
+  },
   methods: {
     tabClick(index) {
       switch (index) {
@@ -91,13 +117,18 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabControl1.currentIndex = index;
+      this.$refs.tabControl2.currentIndex = index;
     },
     backClick() {
       //面向组件的ScrollTo方法
       this.$refs["scroll"].scrollTo(0, 0);
     },
     contentScroll(position) {
+      //1.判断BackTop是否显示
       this.isShowBackTop = -position.y > 1000;
+      //2.吸顶效果
+      this.isTabFixed = -position.y > this.taboffsetTop;
     },
     loadMore() {
       this.getHomeGoods1(this.currentType);
@@ -124,6 +155,9 @@ export default {
         this.$refs.scroll.finishPullUp();
       });
     },
+    swiperImageLoad() {
+      this.taboffsetTop = this.$refs.tabControl2.$el.offsetTop;
+    },
   },
 };
 </script>
@@ -132,31 +166,42 @@ export default {
 #home {
   /* padding-top: 44px; */
   /* vh视口宽度 */
+  position: relative;
   height: 100vh;
 }
 .home-nav {
   background-color: var(--color-tint);
   color: #fff;
-  position: fixed;
+  /* 在使用浏览器原生滚动时 为了让导航不跟随一起滚动 */
+  /* position: fixed;
   left: 0;
   top: 0;
   right: 0;
-  z-index: 9;
+  z-index: 9; */
 }
-.tab-control {
-  position: sticky;
+/* .fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
   top: 44px;
-  z-index: 9;
-}
+} */
 .home ul li {
   font-size: 20;
 }
+.tab-control {
+  position: relative;
+  z-index: 9;
+}
 .content {
   /* 计算scroll的高度 */
-  height: calc(100vh - 93px);
+  /* height: calc(100vh - 93px); */
   /* 需要留一段margin-top给tabbar */
-  margin-top: 44px;
+  /* margin-top: 44px; */
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+  left: 0;
+  right: 0;
   overflow: hidden;
-  z-index: 9;
 }
 </style>

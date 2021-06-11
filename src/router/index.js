@@ -6,13 +6,14 @@ const Home = () => import('../views/home/Home')
 const Category = () => import('../views/category/Category')
 const Cart = () => import('../views/cart/Cart')
 const Profile = () => import('../views/profile/Profile')
+const Detail =()=> import('../views/detail/Detail')
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '',
-    redirects:'/home'
+    path: '/',
+    redirect:'home'
   },
   { 
     path: '/home',
@@ -29,6 +30,11 @@ const routes = [
   {
     path: '/profile',
     component:Profile
+  },
+  //动态路由
+  {
+    path: '/detail:id',
+    component:Detail
   }
 ]
 
