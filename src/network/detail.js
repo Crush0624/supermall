@@ -8,6 +8,11 @@ export function getDetail(iid) {
     }
    })
 }
+export function getRecommend(){
+	return request({
+		url:'/recommend'
+	})
+}
 //新建一个类 constructor构造方法 通过new生成实例会自动调用 之后组件进行开发时即直接面向此对象即可
 export class Goods {
   constructor(itemInfo, columns, services) {

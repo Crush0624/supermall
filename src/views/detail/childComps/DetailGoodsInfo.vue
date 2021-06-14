@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { debounce } from "@common/utils";
+import { debounce, itemDebouce } from "@common/utils";
 export default {
   name: "DetailGoodsInfo",
   props: {
