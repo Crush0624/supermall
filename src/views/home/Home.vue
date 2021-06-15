@@ -34,6 +34,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
     <!-- 直接监听组件点击,必须加上native-->
+    <main-tab-bar />
     <back-top @click.native="backClick" v-show="isShowBackTop" />
   </div>
 </template>
@@ -50,6 +51,7 @@ import TabControl from "@components/content/tabControl/TabControl";
 import GoodsList from "@components/content/goods/GoodsList";
 import Scroll from "@components/common/scroll/Scroll";
 import BackTop from "@components/content/backTop/BackTop";
+import MainTabBar from "../../components/content/maintabbar/MainTabBar.vue";
 
 export default {
   name: "Home",
@@ -62,6 +64,7 @@ export default {
     GoodsList,
     Scroll,
     BackTop,
+    MainTabBar,
   },
   data() {
     return {

@@ -1,6 +1,6 @@
 <template>
   <!-- 此时tab-bar标签名称与import TabBar的驼峰对应 -->
-  <tab-bar>
+  <tab-bar class="tab-bar">
     <tab-bar-item path="/home" activeColor="pink">
       <img slot="item-icon" src="@assets/img/tabbar/home.svg" alt />
       <img slot="item-icon-active" src="@assets/img/tabbar/home_active.svg" alt />
@@ -34,8 +34,12 @@ export default {
     TabBar,
     TabBarItem,
   },
+  methods: {},
 };
 </script>
 
 <style>
+.tab-bar {
+  position: relative;
+}
 </style>

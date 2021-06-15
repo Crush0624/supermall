@@ -11,7 +11,7 @@
       <detail-recommend-info :recommendInfo="recommendInfo" ref="recommend"></detail-recommend-info>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
-    <detail-bot-bar></detail-bot-bar>
+    <detail-bot-bar @addCart="addCart"></detail-bot-bar>
   </div>
 </template>
 
@@ -135,6 +135,20 @@ export default {
           this.$refs.nav.currentIndex = this.currentIndex;
         }
       }
+    },
+    addCart() {
+      const product = {};
+      product.image = this.topImages[0];
+      product.title = this.goods.title;
+      product.desc = this.goods.desc;
+      product.price = this.goods.realPrice;
+      product.iid = this.iid;
+      console.log(this.goods);
+
+      // this.$store.commit("addCart", product);
+
+      //含有异步操作，数据提交至 actions ，可用于向后台提交数据
+      this.$store.dispatch("addCart", product);
     },
   },
 };
